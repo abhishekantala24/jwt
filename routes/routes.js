@@ -6,5 +6,7 @@ const router = Router()
 router.get('/', controller.home)
 router.post('/createuser', controller.createUser)
 router.post('/login', controller.login_email)
+router.post('/feedback', controller.feedback)
+router.post('/inquiry', controller.feedback)
 
 module.exports = router
