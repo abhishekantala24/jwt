@@ -1,12 +1,25 @@
 const { Router } = require("express")
-const controller = require('../controllers/auth')
+const customer = require('../controllers/customer/feedback')
+const auth = require('../controllers/customer/auth')
+const admin = require('../controllers/admin/product')
+const common = require('../controllers/common/index')
 
 const router = Router()
 
-router.get('/', controller.home)
-router.post('/createuser', controller.createUser)
-router.post('/login', controller.login_email)
-router.post('/feedback', controller.feedback)
-router.post('/inquiry', controller.inquiry)
+// auth
+router.get('/product', common.getProduct)
+router.get('/productcatagory', common.getProductCatagory)
+router.post('/auth/createuser', auth.createUser)
+router.post('/auth/login', auth.login_email)
+
+// cart
+
+// feedback
+router.post('/customer/feedback', customer.feedback)
+router.post('/customer/inquiry', customer.inquiry)
+
+// admin
+router.post('/admin/productcatagory', admin.productCatagory)
+router.post('/admin/productlist', admin.productList)
 
 module.exports = router

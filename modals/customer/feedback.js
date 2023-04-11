@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-require('../config/config')
+require('../../config/config')
 
-const finquirySchema = mongoose.Schema({
+const feedbackSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -10,11 +10,14 @@ const finquirySchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    reason: {
+    message: {
+        type: String,
+        required: true,
+    },
+    userId: {
         type: String,
         required: true,
     }
 })
 
-
-module.exports = mongoose.model('inquirys', finquirySchema)
+module.exports = mongoose.model('feedbacks', feedbackSchema)

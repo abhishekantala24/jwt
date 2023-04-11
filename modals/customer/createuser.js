@@ -1,26 +1,20 @@
 const mongoose = require('mongoose')
-require('../config/config')
+require('../../config/config')
 
 const createUser = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
-        lowercase: true,
+        unique: true
     },
     name: {
         type: String,
-        required: true,
-        unique: true,
+        required: true
     },
     phone: {
         type: String,
         required: true,
         unique: true,
-    },
-    roll: {
-        type: String,
-        required: true,
     },
     password: {
         type: String,
