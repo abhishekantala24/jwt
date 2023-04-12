@@ -6,7 +6,7 @@ const dbProductCatagory = require("../../modals/admin/productcatagory")
 module.exports.getProduct = async (req, resp) => {
     try{
         const product = await dbProductList.find({})
-        resp.status(201).send({product})
+        resp.status(200).send({product})
     }catch{
         resp.status(400).send("product not found")
     }
@@ -15,7 +15,7 @@ module.exports.getProduct = async (req, resp) => {
 module.exports.getProductCatagory = async (req, resp) => {
     try{
         const product = await dbProductCatagory.find({})
-        resp.status(201).send({product})
+        resp.status(200).send({product})
     }catch{
         resp.status(400).send("catagory not found")
     }
