@@ -1,5 +1,6 @@
 const { Router } = require("express")
 const customer = require('../controllers/customer/feedback')
+const cart = require('../controllers/customer/cart')
 const auth = require('../controllers/customer/auth')
 const admin = require('../controllers/admin/product')
 const common = require('../controllers/common/index')
@@ -7,12 +8,13 @@ const common = require('../controllers/common/index')
 const router = Router()
 
 // auth
-router.get('/product', common.getProduct)
-router.get('/productcatagory', common.getProductCatagory)
 router.post('/auth/createuser', auth.createUser)
 router.post('/auth/login', auth.login_email)
 
-// cart
+// app
+router.get('/product', common.getProduct)
+router.get('/productcatagory', common.getProductCatagory)
+router.post('/addtocart', cart.addToCart)
 
 // feedback
 router.post('/customer/feedback', customer.feedback)

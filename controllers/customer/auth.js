@@ -16,16 +16,12 @@ module.exports.createUser = async (req, resp) => {
 module.exports.login_email = async (req, resp) => {
     const { email, password } = req.body
     try {
-        const user = await dbUser.find({
-            "$or":[
-                {"email":{$regex:email}},
-                {"password":{$regex:password}}
-            ]
+        const user = await dbUser.findOne({
+            "email": email,
+            "password": password
         })
-        if (user.length >= 0) {
+        if (user.email) {
             resp.status(200).send({ user: user[0], Message: Message.LOGIN_SUCCESS })
-        } else {
-            resp.status(200).send({ Message: Message.CREDENTIAL_ERROR })
         }
     }
     catch (err) {

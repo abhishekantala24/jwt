@@ -7,4 +7,4 @@ app.use(express.json())
 app.use(cors())
 app.use('/',route)
 
-app.listen(5000)
+app.listen(3001)
