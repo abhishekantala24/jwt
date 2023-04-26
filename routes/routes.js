@@ -10,6 +10,8 @@ const router = Router()
 // auth
 router.post('/auth/createuser', auth.createUser)
 router.post('/auth/login', auth.login_email)
+router.post('/auth/sendotp', auth.send_otp)
+router.post('/auth/verifyotp', auth.verify_otp)
 
 // app
 router.get('/product', common.getProduct)
