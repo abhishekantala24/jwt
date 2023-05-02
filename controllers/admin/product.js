@@ -3,7 +3,7 @@ const Message = require("../../config/message")
 const dbProductList = require("../../modals/admin/productlist")
 const dbProductCatagory = require("../../modals/admin/productcatagory")
 
-module.exports.productCatagory = async (req, res) => {
+module.exports.addProductCatagory = async (req, res) => {
     const { catagory } = req.body
     try {
         await dbProductCatagory.create({ catagory })
@@ -14,7 +14,7 @@ module.exports.productCatagory = async (req, res) => {
     }
 }
 
-module.exports.productList = async (req, res) => {
+module.exports.addProductList = async (req, res) => {
     const { productName, description, price, productCatagory } = req.body
     try {
         await dbProductList.create({ productName, description, price, productCatagory })

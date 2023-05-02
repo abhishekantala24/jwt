@@ -21,9 +21,12 @@ module.exports.login_email = async (req, resp) => {
             "email": email,
             "password": password
         })
-        console.log(user)
         if (user.email) {
-            resp.status(200).send({ user: user[0], Message: Message.LOGIN_SUCCESS })
+            resp.status(200).send({
+                status: 200,
+                data: user,
+                Message: Message.LOGIN_SUCCESS
+            })
         }
     }
     catch (err) {
@@ -33,10 +36,8 @@ module.exports.login_email = async (req, resp) => {
 
 module.exports.send_otp = async (req, resp) => {
     const { phoneNumber } = req.body
-    console.log(phoneNumber)
     try {
         const otp = otpGenerator?.generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
-        console.log(otp)
         const user = await dbUser.updateOne(
             { phone: phoneNumber },
             { $set: { otp: otp } })
@@ -53,16 +54,21 @@ module.exports.send_otp = async (req, resp) => {
 module.exports.verify_otp = async (req, resp) => {
     const { phoneNumber, otp } = req.body
     try {
+        const user = await dbUser.findOne({
+            "phone": phoneNumber,
+            "otp": otp
+        })
+        if (user) {
             const response = await dbUser.updateOne(
                 { phone: phoneNumber },
                 { $set: { otp: null } })
-            if(response.modifiedCount){
+            if (response.modifiedCount) {
                 return resp.status(200).send({ Message: "verified" })
-            }else{
+            } else {
                 return resp.status(200).send({ Message: "vrification failed" })
             }
- 
-        // return resp.status(200).send({ user: user, Message: "failed" })
+        }
+        return resp.status(200).send({ Message: "otp not valid" })
     }
     catch (err) {
         resp.status(400).send(Message.USER_NOT_FOUND)
