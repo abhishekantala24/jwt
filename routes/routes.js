@@ -28,7 +28,10 @@ router.post('/customer/inquiry', customer.inquiry)
 
 // admin
 router.post('/admin/addProductcatagory', admin.addProductCatagory)
-router.post('/admin/addProductlist', admin.addProductList)
+router.post('/admin/addProduct', admin.addProduct)
+router.get('/admin/GetProduct/:id', admin.GetProduct)
+router.post('/admin/UpdateProduct', admin.UpdateProduct)
+router.delete('/admin/DeleteProduct/:id', admin.DeleteProduct)
 router.post('/admin/getAllUser', users.getAllUser)
 
 module.exports = router
