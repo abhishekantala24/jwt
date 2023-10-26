@@ -15,7 +15,6 @@ module.exports.addProductCatagory = async (req, res) => {
     }
 }
 module.exports.addProduct = async (req, res) => {
-    console.log("Hello");
     const { productName, description, price, productCatagory, stock } = req.body
     console.log(req.body);
     try {
@@ -23,9 +22,9 @@ module.exports.addProduct = async (req, res) => {
         res.status(200).send("product added")
         console.log(res)
     }
-    catch {
-        res.status(400).send("try again")
-        console.log(res)
+    catch (error) {
+        res.status(400).send(error)
+        console.log(error)
     }
 }
 module.exports.GetProduct = async (req, res) => {

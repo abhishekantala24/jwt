@@ -4,13 +4,13 @@ const dbUser = require('../../modals/customer/createuser')
 const otpGenerator = require('otp-generator')
 
 module.exports.createUser = async (req, resp) => {
-    const { email, password, phone, name, otp } = req.body
+    const { email, password, phone, name } = req.body
     try {
-        const user = await dbUser.create({ name, phone, email, password, otp })
+        const user = await dbUser.create({ name, phone, email, password })
         resp.status(200).send({ user: user, message: Message.USER_CREATED })
     }
     catch (err) {
-        resp.status(400).send(Message.USER_EXIST)
+        resp.status(400).send(err)
     }
 }
 
@@ -42,7 +42,21 @@ module.exports.send_otp = async (req, resp) => {
             { phone: phoneNumber },
             { $set: { otp: otp } })
         if (user.modifiedCount > 0) {
-            return resp.status(200).send({ Message: "Otp Send" })
+            client.messages
+                .create({
+                    body: `Your OTP is: ${otp}`,
+                    from: '6354016781',
+                    to: `whatsapp:${phoneNumber}`
+                })
+                .then((message) => {
+                    console.log(`OTP sent: ${message.sid}`);
+                    return resp.status(200).send({ Message: "OTP Sent" });
+                })
+                .catch((error) => {
+                    console.error(`Error sending OTP: ${error.message}`);
+                    return resp.status(500).send({ Message: "Failed to send OTP" });
+                });
+
         }
         return resp.status(200).send({ Message: "failed" })
     }

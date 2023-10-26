@@ -32,6 +32,6 @@ router.post('/admin/addProduct', admin.addProduct)
 router.get('/admin/GetProduct/:id', admin.GetProduct)
 router.post('/admin/UpdateProduct', admin.UpdateProduct)
 router.delete('/admin/DeleteProduct/:id', admin.DeleteProduct)
-router.post('/admin/getAllUser', users.getAllUser)
+router.get('/admin/getAllUser', users.getAllUser)
 
 module.exports = router
