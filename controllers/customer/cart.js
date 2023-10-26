@@ -33,12 +33,11 @@ module.exports.addToCart = async (req, resp) => {
     }
 }
 
-
 module.exports.getCartData = async (req, resp) => {
-    const { id } = req.body
+    const { customerId } = req.body
     try {
-        const cartData = dbCart.find({ '_id': id })
-        resp.status(200).send(cartData)
+        const cartData = await dbCart.find({ 'customerId': customerId })
+        resp.status(200).send({cart : cartData})
     }
     catch (err) {
         resp.status(400).send("Message.USER_NOT_FOUND")
