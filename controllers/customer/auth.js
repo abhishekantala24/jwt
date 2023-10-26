@@ -42,21 +42,7 @@ module.exports.send_otp = async (req, resp) => {
             { phone: phoneNumber },
             { $set: { otp: otp } })
         if (user.modifiedCount > 0) {
-            client.messages
-                .create({
-                    body: `Your OTP is: ${otp}`,
-                    from: '6354016781',
-                    to: `whatsapp:${phoneNumber}`
-                })
-                .then((message) => {
-                    console.log(`OTP sent: ${message.sid}`);
-                    return resp.status(200).send({ Message: "OTP Sent" });
-                })
-                .catch((error) => {
-                    console.error(`Error sending OTP: ${error.message}`);
-                    return resp.status(500).send({ Message: "Failed to send OTP" });
-                });
-
+            return resp.status(200).send({ Message: "Otp Send" })
         }
         return resp.status(200).send({ Message: "failed" })
     }
