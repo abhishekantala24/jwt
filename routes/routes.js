@@ -16,7 +16,7 @@ router.post('/auth/sendotp', auth.send_otp)
 router.post('/auth/verifyotp', auth.verify_otp)
 
 // product
-router.get('/product', common.getProduct)
+router.get('/product', authMiddleware.verifyToken, common.getProduct)
 router.get('/productcatagory', common.getProductCatagory)
 
 // cart
