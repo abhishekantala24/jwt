@@ -14,8 +14,9 @@ module.exports.addToCart = async (req, resp) => {
                 if (matchProduct) {
                     const update = await dbCart.updateOne(
                         { productId: productId },
-                        { $set: { quantity: matchProduct.quantity + quantity } })
-                    if (update.modifiedCount) {
+                        { $set: { quantity: (parseInt(matchProduct.quantity, 10) + parseInt(quantity, 10)).toString() } })
+
+                    if (update.modifiedCount > 0) {
                         return resp.status(200).send("cart updated")
                     }
                 }
@@ -37,9 +38,30 @@ module.exports.getCartData = async (req, resp) => {
     const { customerId } = req.body
     try {
         const cartData = await dbCart.find({ 'customerId': customerId })
-        resp.status(200).send({cart : cartData})
+        if (cartData.length) {
+            resp.status(200).send({ cart: cartData })
+        } else {
+            resp.status(200).send('cart item not found')
+        }
     }
     catch (err) {
         resp.status(400).send("Message.USER_NOT_FOUND")
+    }
+}
+
+module.exports.removeCartProduct = async (req, res) => {
+    try {
+        const id = req.params.id
+        dbCart.findByIdAndDelete(id)
+            .then((removedDocument) => {
+                if (!removedDocument) {
+                    return res.status(404).json({ error: 'Document not found' });
+                }
+
+                return res.status(200).json({ message: 'Document removed successfully' });
+            })
+    }
+    catch (error) {
+        res.status(400).send("try again please")
     }
 }

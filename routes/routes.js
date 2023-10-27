@@ -5,6 +5,7 @@ const auth = require('../controllers/customer/auth')
 const admin = require('../controllers/admin/product')
 const users = require('../controllers/admin/customer')
 const common = require('../controllers/common/index')
+const authMiddleware = require('../authMiddleware')
 
 const router = Router()
 
@@ -21,6 +22,7 @@ router.get('/productcatagory', common.getProductCatagory)
 // cart
 router.post('/addtocart', cart.addToCart)
 router.post('/getCartData', cart.getCartData)
+router.delete('/removeCartProduct/:id', cart.removeCartProduct)
 
 // feedback
 router.post('/customer/feedback', customer.feedback)
