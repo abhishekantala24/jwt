@@ -40,21 +40,16 @@ module.exports.login_email = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Find the user by email
         const user = await dbUser.findOne({ email });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-        // Compare the provided password with the hashed password in the database
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-
-        // If login is successful, create a JWT token
         const token = authMiddleware.createToken(user);
 
         // Send the token in the response
@@ -68,7 +63,7 @@ module.exports.login_email = async (req, res) => {
 
 module.exports.createUser = async (req, res) => {
     const { email, password, phone, name } = req.body;
-
+    
     try {
         // Check if the email is already registered
         const existingUser = await dbUser.findOne({ email });
