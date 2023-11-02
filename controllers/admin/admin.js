@@ -12,20 +12,39 @@ module.exports.Admin_login_email = async (req, res) => {
         const user = await dbAdmin.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ message: 'Admin not found' });
+            return res.status(404).json(
+                {
+                    status: 404,
+                    message: "Admin not found"
+                }
+            )
         }
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json(
+                {
+                    status: 401,
+                    message: "Invalid credentials"
+                }
+            );
         }
         const token = authMiddleware.createToken(user, "brunt@admin");
 
         // Send the token in the response
-        res.status(200).json({ token });
+        res.status(200).json({
+            status: 200,
+            token: token,
+            message: "Login Successfully !"
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 
@@ -34,32 +53,39 @@ module.exports.createAdmin = async (req, res) => {
     const { email, password, phone, firstName, lastName } = req.body;
 
     try {
-        // Check if the email is already registered
         const existingUser = await dbAdmin.findOne({ email });
 
         if (existingUser) {
-            return res.status(400).json({ message: 'Email is already registered' });
+            return res.status(400).json(
+                {
+                    status: 400,
+                    message: "Email is already registered"
+                }
+            );
         }
 
-        // Create a new user
         const user = new dbAdmin({ email, password, phone, firstName, lastName });
 
-        // Hash the password
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         user.password = hashedPassword;
 
-        // Save the user to the database
         await user.save();
 
-        // If signup is successful, create a JWT token
         const token = authMiddleware.createToken(user, "brunt@admin");
 
-        // Send the token in the response
-        res.status(201).json({ token });
+        res.status(201).json({
+            status: 201,
+            token: token,
+            message: "Admin Created Successfully !"
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 

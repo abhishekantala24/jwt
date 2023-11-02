@@ -1,15 +1,18 @@
 
 const dbUser = require('../../modals/customer/createuser')
 
-module.exports.getAllUser = async (req, resp) => {
+module.exports.getAllUser = async (req, res) => {
     try {
         const users = await dbUser.find({}).select('-password')
-        resp.status(200).send({
+        if (!users) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).send({
             status: 200,
             data: users,
-            Message: "successful"
+            message: "successfull"
         })
     } catch {
-        resp.status(400).send("product not found")
+        res.status(500).send({ message: 'Server error' })
     }
 }

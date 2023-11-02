@@ -7,10 +7,18 @@ module.exports.addProductCatagory = async (req, res) => {
     const { catagory } = req.body
     try {
         await dbProductCatagory.create({ catagory })
-        res.status(200).send("product catagory added")
+        res.status(200).send({
+            status: 200,
+            message: "product catagory added successfully"
+        })
     }
     catch {
-        res.status(400).send(error)
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 
@@ -18,47 +26,23 @@ module.exports.addProduct = async (req, res) => {
     const { productName, description, price, productCatagory, stock } = req.body
     try {
         await dbProductList.create({ productName, description, price, productCatagory, stock })
-        res.status(200).send("product added")
+        res.status(200).send({
+            status: 200,
+            message: "product added successfully"
+        })
     }
     catch (error) {
-        res.status(400).send(error)
-        console.log(error)
-    }
-}
-
-module.exports.GetProduct = async (req, res) => {
-    const id = req.params.id
-    try {
-        const product = await dbProductList.findOne({ "_id": id })
-        if (product) {
-            res.status(200).send(product)
-        }
-        res.status(404).send("Product not found")
-    }
-    catch (error) {
-        res.status(400).send(error)
-        console.log(error)
-    }
-}
-
-module.exports.getProductByProductCatagory = async (req, res) => {
-    const id = req.params.id
-    try {
-        const product = await dbProductList.findOne({ "productCatagory": id })
-        if (product) {
-            res.status(200).send(product)
-        }
-        res.status(404).send("Product not found")
-    }
-    catch (error) {
-        res.status(400).send(error)
-        console.log(error)
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 
 module.exports.UpdateProduct = async (req, res) => {
     const { _id, productName, description, price, productCatagory, stock } = req.body
-    console.log(_id)
     try {
         const product = await dbProductList.findOne({ "_id": _id }).updateOne(
             {
@@ -68,15 +52,26 @@ module.exports.UpdateProduct = async (req, res) => {
                 productCatagory: productCatagory,
                 stock: stock
             })
-        console.log(product)
         if (product.modifiedCount === 1) {
-            res.status(200).send("Product update successfully")
+            res.status(200).send(
+                {
+                    status: 200,
+                    message: "Product update successfully"
+                })
         } else {
-            res.status(200).send("Product already modify with that value")
+            res.status(200).send({
+                status: 200,
+                message: "Product already modify with that value"
+            })
         }
     }
     catch {
-        res.status(400).send("try again please")
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 
@@ -86,14 +81,24 @@ module.exports.DeleteProduct = async (req, res) => {
         dbProductList.findByIdAndDelete(id)
             .then((deletedDocument) => {
                 if (!deletedDocument) {
-                    return res.status(404).json({ error: 'Product not found' });
+                    return res.status(404).json({
+                        status: 404,
+                        message: "Product not found"
+                    });
                 }
-
-                return res.status(200).json({ message: 'Product deleted successfully' });
+                return res.status(200).json(
+                    {
+                        status: 200,
+                        message: 'Product deleted successfully'
+                    });
             })
     }
     catch (error) {
-        console.log(error)
-        res.status(400).send("try again please")
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }

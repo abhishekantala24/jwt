@@ -3,24 +3,44 @@ const Message = require("../../config/message")
 const dbFeedback = require('../../modals/customer/feedback')
 const dbInquiry = require('../../modals/customer/inquiry')
 
-module.exports.feedback = async (req, resp) => {
+module.exports.feedback = async (req, res) => {
     const { name, phone, message, customerId, start } = req.body
     try {
         await dbFeedback.create({ name, phone, message, customerId, start })
-        resp.status(200).send(Message.THANKYOU)
+        res.status(201).json(
+            {
+                status: 201,
+                message: "Thank you for giving feedback"
+            }
+        );
     }
     catch (err) {
-        resp.status(400).send(Message.USER_NOT_FOUND)
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }
 
-module.exports.inquiry = async (req, resp) => {
+module.exports.inquiry = async (req, res) => {
     const { name, phone, reason, customerId } = req.body
     try {
         await dbInquiry.create({ name, phone, reason, customerId })
-        resp.status(200).send(Message.WILL_CONTACT)
+        res.status(201).json(
+            {
+                status: 201,
+                message: Message.WILL_CONTACT
+            }
+        );
     }
     catch (err) {
-        resp.status(400).send(Message.USER_NOT_FOUND)
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
     }
 }

@@ -25,8 +25,8 @@ router.post('/admin/verifyotp', adminAuth.verify_otp)
 // Commen Apis
 router.get('/product', authMiddleware.verifyToken, common.getProduct)
 router.get('/productcatagory', authMiddleware.verifyToken, common.getProductCatagory)
-router.get('/getproduct/:id', authMiddleware.verifyToken, product.GetProduct)
-router.get('/getProductByProductCatagory/:id', authMiddleware.verifyToken, product.getProductByProductCatagory)
+router.get('/getproduct/:id', authMiddleware.verifyToken, common.getProductById)
+router.get('/getProductByProductCatagory/:id', authMiddleware.verifyToken, common.getProductByProductCatagory)
 
 // Customer apis
 router.post('/customer/addtocart', authMiddleware.verifyToken, cart.addToCart)
