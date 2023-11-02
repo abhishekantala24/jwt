@@ -4,9 +4,9 @@ const dbFeedback = require('../../modals/customer/feedback')
 const dbInquiry = require('../../modals/customer/inquiry')
 
 module.exports.feedback = async (req, resp) => {
-    const { name, phone, message, userId } = req.body
+    const { name, phone, message, customerId, start } = req.body
     try {
-        await dbFeedback.create({ name, phone, message, userId })
+        await dbFeedback.create({ name, phone, message, customerId, start })
         resp.status(200).send(Message.THANKYOU)
     }
     catch (err) {
@@ -15,9 +15,9 @@ module.exports.feedback = async (req, resp) => {
 }
 
 module.exports.inquiry = async (req, resp) => {
-    const { name, phone, reason, userId } = req.body
+    const { name, phone, reason, customerId } = req.body
     try {
-        await dbInquiry.create({ name, phone, reason, userId })
+        await dbInquiry.create({ name, phone, reason, customerId })
         resp.status(200).send(Message.WILL_CONTACT)
     }
     catch (err) {

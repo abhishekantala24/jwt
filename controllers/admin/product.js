@@ -44,31 +44,32 @@ module.exports.UpdateProduct = async (req, res) => {
                 productCatagory: productCatagory,
                 stock: stock
             })
-            console.log(product)
-            if (product.modifiedCount === 1) {
-                res.status(200).send("Product update successfully")
-            } else {
-                res.status(200).send("Product already modify with that value")
-            }
-        }
-        catch {
-            res.status(400).send("try again please")
+        console.log(product)
+        if (product.modifiedCount === 1) {
+            res.status(200).send("Product update successfully")
+        } else {
+            res.status(200).send("Product already modify with that value")
         }
     }
-    module.exports.DeleteProduct = async (req, res) => {
-        try {
-            const id = req.params.id
-            dbProductList.findByIdAndDelete(id)
+    catch {
+        res.status(400).send("try again please")
+    }
+}
+
+module.exports.DeleteProduct = async (req, res) => {
+    try {
+        const id = req.params.id
+        dbProductList.findByIdAndDelete(id)
             .then((deletedDocument) => {
                 if (!deletedDocument) {
-                    return res.status(404).json({ error: 'Document not found' });
+                    return res.status(404).json({ error: 'Product not found' });
                 }
-                
-                return res.status(200).json({ message: 'Document deleted successfully' });
+
+                return res.status(200).json({ message: 'Product deleted successfully' });
             })
-        }
-        catch (error) {
-            console.log(error)
-            res.status(400).send("try again please")
-        }
     }
+    catch (error) {
+        console.log(error)
+        res.status(400).send("try again please")
+    }
+}

@@ -49,19 +49,28 @@ module.exports.getCartData = async (req, resp) => {
     }
 }
 
-module.exports.removeCartProduct = async (req, res) => {
-    try {
-        const id = req.params.id
-        dbCart.findByIdAndDelete(id)
-            .then((removedDocument) => {
-                if (!removedDocument) {
-                    return res.status(404).json({ error: 'Document not found' });
-                }
+const mongoose = require('mongoose');
 
-                return res.status(200).json({ message: 'Document removed successfully' });
-            })
-    }
-    catch (error) {
-        res.status(400).send("try again please")
+module.exports.removeCartProduct = async (req, res) => {
+    const { customerId, productId } = req.body
+    try {
+        if (!mongoose.Types.ObjectId.isValid(customerId) || !mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ error: 'Invalid customerId or productId' });
+        }
+        dbCart.findOne({ customerId, productId })
+            .then(async (cartItem) => {
+                if (!cartItem) {
+                    return res.status(404).json({ error: 'Product not found in the cart' });
+                }
+                if (cartItem.quantity === 1) {
+                    await dbCart.findByIdAndDelete(cartItem._id);
+                } else {
+                    cartItem.quantity -= 1;
+                    await cartItem.save();
+                }
+                return res.status(200).json({ message: 'Product removed successfully' });
+            });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }

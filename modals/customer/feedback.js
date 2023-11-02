@@ -14,7 +14,7 @@ const feedbackSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    userId: {
+    customerId: {
         type: String,
         required: true,
     }

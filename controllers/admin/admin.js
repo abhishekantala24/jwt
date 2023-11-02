@@ -1,56 +1,25 @@
 const Message = require("../../config/message")
 
-const dbUser = require('../../modals/customer/createuser')
+const dbAdmin = require('../../modals/admin/admin')
 const otpGenerator = require('otp-generator')
 const authMiddleware = require('../../authMiddleware')
 const bcrypt = require('bcrypt');
 
-// module.exports.createUser = async (req, resp) => {
-//     const { email, password, phone, name } = req.body
-//     try {
-//         const user = await dbUser.create({ name, phone, email, password })
-//         resp.status(200).send({ user: user, message: Message.USER_CREATED })
-//     }
-//     catch (err) {
-//         resp.status(400).send(err)
-//     }
-// }
-
-// module.exports.login_email = async (req, resp) => {
-//     const { email, password } = req.body
-//     try {
-//         const user = await dbUser.findOne({
-//             "email": email,
-//             "password": password
-//         })
-//         if (user.email) {
-//             resp.status(200).send({
-//                 status: 200,
-//                 data: user,
-//                 Message: Message.LOGIN_SUCCESS
-//             })
-//         }
-//     }
-//     catch (err) {
-//         resp.status(400).send(Message.USER_NOT_FOUND)
-//     }
-// }
-
-module.exports.login_email = async (req, res) => {
+module.exports.Admin_login_email = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await dbUser.findOne({ email });
+        const user = await dbAdmin.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Admin not found' });
         }
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        const token = authMiddleware.createToken(user, "@ntala#123");
+        const token = authMiddleware.createToken(user, "brunt@admin");
 
         // Send the token in the response
         res.status(200).json({ token });
@@ -61,19 +30,19 @@ module.exports.login_email = async (req, res) => {
 }
 
 
-module.exports.createUser = async (req, res) => {
-    const { email, password, phone, name } = req.body;
-    
+module.exports.createAdmin = async (req, res) => {
+    const { email, password, phone, firstName, lastName } = req.body;
+
     try {
         // Check if the email is already registered
-        const existingUser = await dbUser.findOne({ email });
+        const existingUser = await dbAdmin.findOne({ email });
 
         if (existingUser) {
             return res.status(400).json({ message: 'Email is already registered' });
         }
 
         // Create a new user
-        const user = new dbUser({ email, password, phone, name });
+        const user = new dbAdmin({ email, password, phone, firstName, lastName });
 
         // Hash the password
         const saltRounds = 10;
@@ -84,7 +53,7 @@ module.exports.createUser = async (req, res) => {
         await user.save();
 
         // If signup is successful, create a JWT token
-        const token = authMiddleware.createToken(user, "@ntala#123");
+        const token = authMiddleware.createToken(user, "brunt@admin");
 
         // Send the token in the response
         res.status(201).json({ token });
@@ -99,7 +68,7 @@ module.exports.send_otp = async (req, resp) => {
     const { phoneNumber } = req.body
     try {
         const otp = otpGenerator?.generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
-        const user = await dbUser.updateOne(
+        const user = await dbAdmin.updateOne(
             { phone: phoneNumber },
             { $set: { otp: otp } })
         if (user.modifiedCount > 0) {
@@ -115,12 +84,12 @@ module.exports.send_otp = async (req, resp) => {
 module.exports.verify_otp = async (req, resp) => {
     const { phoneNumber, otp } = req.body
     try {
-        const user = await dbUser.findOne({
+        const user = await dbAdmin.findOne({
             "phone": phoneNumber,
             "otp": otp
         })
         if (user) {
-            const response = await dbUser.updateOne(
+            const response = await dbAdmin.updateOne(
                 { phone: phoneNumber },
                 { $set: { otp: null } })
             if (response.modifiedCount) {
