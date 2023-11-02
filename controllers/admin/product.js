@@ -1,5 +1,4 @@
 const Message = require("../../config/message")
-
 const dbProductList = require("../../modals/admin/productlist")
 const dbProductCatagory = require("../../modals/admin/productcatagory")
 
@@ -11,27 +10,52 @@ module.exports.addProductCatagory = async (req, res) => {
         res.status(200).send("product catagory added")
     }
     catch {
-        res.status(400).send("try again")
+        res.status(400).send(error)
     }
 }
+
 module.exports.addProduct = async (req, res) => {
     const { productName, description, price, productCatagory, stock } = req.body
-    console.log(req.body);
     try {
         await dbProductList.create({ productName, description, price, productCatagory, stock })
         res.status(200).send("product added")
-        console.log(res)
     }
     catch (error) {
         res.status(400).send(error)
         console.log(error)
     }
 }
+
 module.exports.GetProduct = async (req, res) => {
     const id = req.params.id
-    const user = await dbProductList.findOne({ "_id": id })
-    res.status(200).send(user)
+    try {
+        const product = await dbProductList.findOne({ "_id": id })
+        if (product) {
+            res.status(200).send(product)
+        }
+        res.status(404).send("Product not found")
+    }
+    catch (error) {
+        res.status(400).send(error)
+        console.log(error)
+    }
 }
+
+module.exports.getProductByProductCatagory = async (req, res) => {
+    const id = req.params.id
+    try {
+        const product = await dbProductList.findOne({ "productCatagory": id })
+        if (product) {
+            res.status(200).send(product)
+        }
+        res.status(404).send("Product not found")
+    }
+    catch (error) {
+        res.status(400).send(error)
+        console.log(error)
+    }
+}
+
 module.exports.UpdateProduct = async (req, res) => {
     const { _id, productName, description, price, productCatagory, stock } = req.body
     console.log(_id)
