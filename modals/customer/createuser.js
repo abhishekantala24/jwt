@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('../../config/config')
 
-const createUser = mongoose.Schema({
+const userSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -25,4 +25,4 @@ const createUser = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('users', createUser)
+module.exports = mongoose.model('users', userSchema)

@@ -7,12 +7,12 @@ module.exports.getProduct = async (req, res) => {
     try {
         const product = await dbProductList.find({})
         if (product) {
-            res.status(200).send({
-                status: 200,
+            return res.status(200).send({
+                data: product,
                 message: "All product get successfully"
             })
         }
-        res.status(404).send({
+        return res.status(404).send({
             status: 404,
             message: "Product not found"
         })
@@ -30,12 +30,13 @@ module.exports.getProductCatagory = async (req, res) => {
     try {
         const product = await dbProductCatagory.find({})
         if (product) {
-            res.status(200).send({
+            return res.status(200).send({
                 status: 200,
+                data: product,
                 message: "All product categories get successfully"
             })
         }
-        res.status(404).send({
+        return res.status(404).send({
             status: 404,
             message: "Product not found"
         })
@@ -54,12 +55,13 @@ module.exports.getProductById = async (req, res) => {
     try {
         const product = await dbProductList.findOne({ "_id": id })
         if (product) {
-            res.status(200).send({
+            return res.status(200).send({
                 status: 200,
+                data: product,
                 message: "product get successfully"
             })
         }
-        res.status(404).send({
+        return res.status(404).send({
             status: 404,
             message: "Product not found"
         })
@@ -79,12 +81,13 @@ module.exports.getProductByProductCatagory = async (req, res) => {
     try {
         const product = await dbProductList.findOne({ "productCatagory": id })
         if (product) {
-            res.status(200).send({
+            return res.status(200).send({
                 status: 200,
+                data: product,
                 message: "product get successfully"
             })
         }
-        res.status(404).send({
+        return res.status(404).send({
             status: 404,
             message: "Product not found"
         })

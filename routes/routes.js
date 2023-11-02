@@ -4,8 +4,10 @@ const cart = require('../controllers/customer/cart')
 const auth = require('../controllers/customer/auth')
 const product = require('../controllers/admin/product')
 const adminAuth = require('../controllers/admin/admin')
+const address = require('../controllers/customer/address')
 const users = require('../controllers/admin/customer')
 const common = require('../controllers/common/index')
+const order = require('../controllers/customer/order')
 const authMiddleware = require('../authMiddleware')
 
 const router = Router()
@@ -18,9 +20,12 @@ router.post('/auth/verifyotp', auth.verify_otp)
 
 // Admin authentication apis
 router.post('/admin/createadmin', adminAuth.createAdmin)
+router.post('/admin/updateadmin', authMiddleware.verifyToken, adminAuth.updateAdmin)
+router.get('/admin/getadmindetails', authMiddleware.verifyToken, adminAuth.getAdminDetails)
 router.post('/admin/login', adminAuth.Admin_login_email)
 router.post('/admin/sendotp', adminAuth.send_otp)
 router.post('/admin/verifyotp', adminAuth.verify_otp)
+//------------------------------------------------------------------------------------------------------------
 
 // Commen Apis
 router.get('/product', authMiddleware.verifyToken, common.getProduct)
@@ -30,8 +35,15 @@ router.get('/getProductByProductCatagory/:id', authMiddleware.verifyToken, commo
 
 // Customer apis
 router.post('/customer/addtocart', authMiddleware.verifyToken, cart.addToCart)
-router.post('/customer/getCartData', authMiddleware.verifyToken, cart.getCartData)
-router.post('/customer/removeCartProduct', authMiddleware.verifyToken, cart.removeCartProduct)
+router.get('/customer/getCartData', authMiddleware.verifyToken, cart.getCartData)
+router.delete('/customer/removeCartProduct', authMiddleware.verifyToken, cart.removeCartProduct)
+
+router.post('/customer/addaddress', authMiddleware.verifyToken, address.addAddress)
+router.get('/customer/getaddress', authMiddleware.verifyToken, address.getAddress)
+router.put('/customer/defaultaddress/:id', authMiddleware.verifyToken, address.setDefaultAddress)
+router.delete('/customer/removeaddress/:id', authMiddleware.verifyToken, address.removeAddress)
+
+router.post('/customer/createOrder', authMiddleware.verifyToken, order.createOrder)
 
 router.post('/customer/feedback', authMiddleware.verifyToken, customer.feedback)
 router.post('/customer/inquiry', authMiddleware.verifyToken, customer.inquiry)

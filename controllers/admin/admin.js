@@ -38,7 +38,6 @@ module.exports.Admin_login_email = async (req, res) => {
             message: "Login Successfully !"
         });
     } catch (error) {
-        console.error(error);
         res.status(500).json(
             {
                 status: 500,
@@ -54,12 +53,13 @@ module.exports.createAdmin = async (req, res) => {
 
     try {
         const existingUser = await dbAdmin.findOne({ email });
+        const existingPhone = await dbAdmin.findOne({ phone });
 
-        if (existingUser) {
+        if (existingUser || existingPhone) {
             return res.status(400).json(
                 {
                     status: 400,
-                    message: "Email is already registered"
+                    message: "Email or Phone Number is already registered"
                 }
             );
         }
@@ -89,6 +89,62 @@ module.exports.createAdmin = async (req, res) => {
     }
 }
 
+module.exports.updateAdmin = async (req, res) => {
+    const id = req.user.userId
+    const { email, phone, firstName, lastName } = req.body;
+    try {
+        const updateAdminDetails = await dbAdmin.findByIdAndUpdate({ _id: id }, { email, phone, firstName, lastName });
+        if (updateAdminDetails) {
+            return res.status(200).json(
+                {
+                    status: 200,
+                    message: "Admin details updated"
+                }
+            );
+        }
+        
+        res.status(404).json({
+            status: 404,
+            message: "Admin not found"
+        });
+    } catch (error) {
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
+    }
+}
+
+module.exports.getAdminDetails = async (req, res) => {
+    const id = req.user.userId
+    try {
+        const adminDetails = await dbAdmin.findOne({ _id: id }).select('-password')
+
+        if (adminDetails) {
+            return res.status(200).json(
+                {
+                    status: 200,
+                    data: adminDetails,
+                    message: "Admin details get successfully"
+                }
+            );
+        }
+
+        res.status(404).json({
+            status: 404,
+            message: "Admin not found"
+        });
+    } catch (error) {
+        res.status(500).json(
+            {
+                status: 500,
+                message: "Server error"
+            }
+        );
+    }
+}
 
 module.exports.send_otp = async (req, resp) => {
     const { phoneNumber } = req.body

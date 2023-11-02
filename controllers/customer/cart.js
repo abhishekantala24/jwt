@@ -53,13 +53,38 @@ module.exports.addToCart = async (req, res) => {
 }
 
 module.exports.getCartData = async (req, res) => {
-    const { customerId } = req.body
+    const customerId = req.user.userId
     try {
         const cartData = await dbCart.find({ 'customerId': customerId })
+
         if (cartData.length) {
+            const productIds = cartData.map(item => item.productId);
+            const productList = await dbProductList.find({ _id: { $in: productIds } });
+
+            const updatedCartItems = cartData.map(cartItem => {
+                const matchingProduct = productList.find(product => product._id.toString() === cartItem.productId.toString());
+                if (matchingProduct) {
+                    return {
+                        ...cartItem.toObject(),
+                        productData: matchingProduct.toObject()
+                    };
+                }
+                return cartItem;
+            });
+
+            const total = updatedCartItems.reduce((acc, item) => {
+                if (item.productData) {
+                    return acc + item.productData.price * item.quantity;
+                }
+                return acc;
+            }, 0);
+
             res.status(200).send({
                 status: 200,
-                data: cartData,
+                data: {
+                    cartItem: updatedCartItems,
+                    total
+                },
                 message: "Cart item get successfully"
             })
         } else {

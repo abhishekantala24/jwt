@@ -5,6 +5,7 @@ const productCatagorySchema = mongoose.Schema({
     catagory: {
         type: String,
         required: true,
+        unique: true,
     }
 })
 

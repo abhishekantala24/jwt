@@ -3,8 +3,12 @@ const mongoose = require('mongoose');
 // Define the Address Schema
 const addressSchema = new mongoose.Schema({
     customerId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true
+    },
+    isDefault: {
+        type: Boolean,
+        default: false // Default to false for new addresses
     },
     firstName: {
         type: String,

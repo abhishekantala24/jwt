@@ -2,12 +2,11 @@ const jwt = require('jsonwebtoken');
 const customerSecretKey = '@ntala#123';
 const adminSecretKey = 'brunt@admin';
 function createToken(user, key) {
-    console.log(key);
     const payload = {
         userId: user._id,
         email: user.email,
     };
-    return jwt.sign(payload, key, { expiresIn: '1h' });
+    return jwt.sign(payload, key, { expiresIn: '240h' });
 }
 
 function verifyToken(req, res, next) {
