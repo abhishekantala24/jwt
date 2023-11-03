@@ -49,12 +49,10 @@ router.post('/customer/feedback', authMiddleware.verifyToken, customer.feedback)
 router.post('/customer/inquiry', authMiddleware.verifyToken, customer.inquiry)
 
 // admin apis
-
 router.post('/admin/addProductcatagory', authMiddleware.verifyToken, product.addProductCatagory)
 router.post('/admin/addProduct', authMiddleware.verifyToken, product.addProduct)
 router.post('/admin/UpdateProduct', authMiddleware.verifyToken, product.UpdateProduct)
 router.delete('/admin/DeleteProduct/:id', authMiddleware.verifyToken, product.DeleteProduct)
-
 router.get('/admin/getAllUser', authMiddleware.verifyToken, users.getAllUser)
 
 module.exports = router
