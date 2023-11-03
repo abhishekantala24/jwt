@@ -12,9 +12,13 @@ module.exports.createOrder = async (req, res) => {
     try {
         const cartItems = await dbCart.find({ customerId })
         if (cartItems.length === 0) {
-            return res.status(404).json({ code: 404, message: "Cart is empty" });
+            return res.status(404).json({
+                code: 404,
+                data: [],
+                message: "Cart is empty"
+            });
         }
-        const deliveryAddress = await dbAddress.findOne({ customerId, isDefault: true }).select('_id').lean();
+        const deliveryAddress = await dbAddress.findOne( { customerId, isDefault: true }).select('_id').lean();
         await dbOrder.create(
             {
                 customerId,
@@ -50,6 +54,7 @@ module.exports.createOrder = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

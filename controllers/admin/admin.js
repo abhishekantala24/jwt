@@ -59,6 +59,7 @@ module.exports.createAdmin = async (req, res) => {
             return res.status(400).json(
                 {
                     status: 400,
+                    data: [],
                     message: "Email or Phone Number is already registered"
                 }
             );
@@ -76,13 +77,14 @@ module.exports.createAdmin = async (req, res) => {
 
         res.status(201).json({
             status: 201,
-            token: token,
+            data: { token: token },
             message: "Admin Created Successfully !"
         });
     } catch (error) {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -98,19 +100,22 @@ module.exports.updateAdmin = async (req, res) => {
             return res.status(200).json(
                 {
                     status: 200,
+                    data: [],
                     message: "Admin details updated"
                 }
             );
         }
-        
+
         res.status(404).json({
             status: 404,
+            data: [],
             message: "Admin not found"
         });
     } catch (error) {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -134,12 +139,14 @@ module.exports.getAdminDetails = async (req, res) => {
 
         res.status(404).json({
             status: 404,
+            data: [],
             message: "Admin not found"
         });
     } catch (error) {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

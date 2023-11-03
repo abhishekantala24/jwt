@@ -20,6 +20,7 @@ module.exports.addToCart = async (req, res) => {
                     if (update.modifiedCount > 0) {
                         return res.status(200).send({
                             status: 200,
+                            data: [],
                             message: "cart updated"
                         })
                     }
@@ -28,17 +29,20 @@ module.exports.addToCart = async (req, res) => {
                     await dbCart.create({ "productId": productId, "customerId": customerId, "quantity": quantity, ...product })
                     return res.status(201).send({
                         status: 201,
+                        data: [],
                         message: "product added in your cart"
                     })
                 }
             }
             return res.status(404).send({
                 status: 404,
+                data: [],
                 message: "product not found"
             })
         }
         return res.status(200).send({
             status: 404,
+            data: [],
             message: "User not found"
         })
     }
@@ -46,6 +50,7 @@ module.exports.addToCart = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -90,6 +95,7 @@ module.exports.getCartData = async (req, res) => {
         } else {
             res.status(404).send({
                 status: 404,
+                data: [],
                 message: "Cart item not found"
             })
         }
@@ -98,6 +104,7 @@ module.exports.getCartData = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -110,6 +117,7 @@ module.exports.removeCartProduct = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(customerId) || !mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({
                 status: 400,
+                data: [],
                 message: "Invalid customerId or productId"
             });
         }
@@ -118,6 +126,7 @@ module.exports.removeCartProduct = async (req, res) => {
                 if (!cartItem) {
                     return res.status(404).json({
                         status: 404,
+                        data: [],
                         message: "Product not found in the cart"
                     });
                 }
@@ -129,6 +138,7 @@ module.exports.removeCartProduct = async (req, res) => {
                 }
                 return res.status(200).json({
                     status: 200,
+                    data: [],
                     message: "Product removed successfully"
                 });
             });
@@ -136,6 +146,7 @@ module.exports.removeCartProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

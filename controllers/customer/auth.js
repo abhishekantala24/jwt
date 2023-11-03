@@ -14,6 +14,7 @@ module.exports.login_email = async (req, res) => {
             return res.status(404).json(
                 {
                     status: 404,
+                    data: [],
                     message: "User not found"
                 }
             );
@@ -23,6 +24,7 @@ module.exports.login_email = async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({
                 status: 401,
+                data: [],
                 message: 'Invalid credentials'
             });
         }
@@ -31,12 +33,13 @@ module.exports.login_email = async (req, res) => {
         // Send the token in the response
         res.status(200).json({
             status: 200,
-            token: token,
+            data: { token: token },
             message: "Login Successfully !"
         });
     } catch (error) {
         res.status(500).json({
             status: 500,
+            data: [],
             message: "Server error"
         });
     }
@@ -52,6 +55,7 @@ module.exports.createUser = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({
                 status: 400,
+                data: [],
                 message: "Email is already registered"
             });
         }
@@ -63,12 +67,13 @@ module.exports.createUser = async (req, res) => {
         const token = authMiddleware.createToken(user, "@ntala#123");
         res.status(201).json({
             status: 201,
-            token: token,
+            data: { token: token },
             message: "User Created Successfully !"
         });
     } catch (error) {
         res.status(500).json({
             status: 500,
+            data: [],
             message: "Server error"
         });
     }

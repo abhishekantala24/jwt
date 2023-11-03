@@ -14,12 +14,14 @@ module.exports.getProduct = async (req, res) => {
         }
         return res.status(404).send({
             status: 404,
+            data: [],
             message: "Product not found"
         })
     } catch {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -38,12 +40,14 @@ module.exports.getProductCatagory = async (req, res) => {
         }
         return res.status(404).send({
             status: 404,
+            data: [],
             message: "Product not found"
         })
     } catch {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -63,6 +67,7 @@ module.exports.getProductById = async (req, res) => {
         }
         return res.status(404).send({
             status: 404,
+            data: [],
             message: "Product not found"
         })
     }
@@ -70,6 +75,7 @@ module.exports.getProductById = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -89,6 +95,7 @@ module.exports.getProductByProductCatagory = async (req, res) => {
         }
         return res.status(404).send({
             status: 404,
+            data: [],
             message: "Product not found"
         })
     }
@@ -96,6 +103,7 @@ module.exports.getProductByProductCatagory = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

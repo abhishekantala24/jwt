@@ -10,6 +10,7 @@ module.exports.addAddress = async (req, res) => {
             return res.status(404).json(
                 {
                     status: 404,
+                    data: [],
                     message: "user not found"
                 }
             );
@@ -18,6 +19,7 @@ module.exports.addAddress = async (req, res) => {
         res.status(201).json(
             {
                 status: 201,
+                data: [],
                 message: "Address Saved"
             }
         );
@@ -26,6 +28,7 @@ module.exports.addAddress = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -40,6 +43,7 @@ module.exports.getAddress = async (req, res) => {
             return res.status(404).json(
                 {
                     status: 404,
+                    data: [],
                     message: "Address not found"
                 }
             );
@@ -56,6 +60,7 @@ module.exports.getAddress = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -70,12 +75,14 @@ module.exports.removeAddress = async (req, res) => {
                 if (!deletedDocument) {
                     return res.status(404).json({
                         status: 404,
+                        data: [],
                         message: "Address not found"
                     });
                 }
                 return res.status(200).json(
                     {
                         status: 200,
+                        data: [],
                         message: 'Address deleted successfully'
                     });
             })
@@ -84,6 +91,7 @@ module.exports.removeAddress = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -100,12 +108,14 @@ module.exports.setDefaultAddress = async (req, res) => {
                 if (!defaultAddress) {
                     return res.status(404).json({
                         status: 404,
+                        data: [],
                         message: "Address not found"
                     });
                 }
                 return res.status(200).json(
                     {
                         status: 200,
+                        data: [],
                         message: 'Default address added successfully'
                     });
             })
@@ -114,6 +124,7 @@ module.exports.setDefaultAddress = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

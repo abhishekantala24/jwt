@@ -7,6 +7,7 @@ module.exports.getAllUser = async (req, res) => {
         if (!users) {
             return res.status(404).json({
                 status: 404,
+                data: [],
                 message: "User not found"
             });
         }
@@ -19,6 +20,7 @@ module.exports.getAllUser = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

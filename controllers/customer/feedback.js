@@ -10,6 +10,7 @@ module.exports.feedback = async (req, res) => {
         res.status(201).json(
             {
                 status: 201,
+                data: [],
                 message: "Thank you for giving feedback"
             }
         );
@@ -18,6 +19,7 @@ module.exports.feedback = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -31,6 +33,7 @@ module.exports.inquiry = async (req, res) => {
         res.status(201).json(
             {
                 status: 201,
+                data: [],
                 message: Message.WILL_CONTACT
             }
         );
@@ -39,6 +42,7 @@ module.exports.inquiry = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );

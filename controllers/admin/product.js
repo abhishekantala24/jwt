@@ -56,11 +56,13 @@ module.exports.UpdateProduct = async (req, res) => {
             res.status(200).send(
                 {
                     status: 200,
+                    data: [],
                     message: "Product update successfully"
                 })
         } else {
             res.status(200).send({
                 status: 200,
+                data: [],
                 message: "Product already modify with that value"
             })
         }
@@ -69,6 +71,7 @@ module.exports.UpdateProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
@@ -83,12 +86,14 @@ module.exports.DeleteProduct = async (req, res) => {
                 if (!deletedDocument) {
                     return res.status(404).json({
                         status: 404,
+                        data: [],
                         message: "Product not found"
                     });
                 }
                 return res.status(200).json(
                     {
                         status: 200,
+                        data: [],
                         message: 'Product deleted successfully'
                     });
             })
@@ -97,6 +102,7 @@ module.exports.DeleteProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Server error"
             }
         );
