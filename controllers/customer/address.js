@@ -29,7 +29,7 @@ module.exports.addAddress = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -61,7 +61,7 @@ module.exports.getAddress = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -92,7 +92,7 @@ module.exports.removeAddress = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -125,7 +125,7 @@ module.exports.setDefaultAddress = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }

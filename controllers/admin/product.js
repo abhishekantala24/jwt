@@ -16,7 +16,7 @@ module.exports.addProductCatagory = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -35,7 +35,7 @@ module.exports.addProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -72,7 +72,7 @@ module.exports.UpdateProduct = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -103,7 +103,7 @@ module.exports.DeleteProduct = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }

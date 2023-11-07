@@ -40,7 +40,7 @@ module.exports.login_email = async (req, res) => {
         res.status(500).json({
             status: 500,
             data: [],
-            message: "Server error"
+            message: "Internal server error"
         });
     }
 }
@@ -74,7 +74,7 @@ module.exports.createUser = async (req, res) => {
         res.status(500).json({
             status: 500,
             data: [],
-            message: "Server error"
+            message: "Internal server error"
         });
     }
 }

@@ -21,7 +21,7 @@ module.exports.getAllUser = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }

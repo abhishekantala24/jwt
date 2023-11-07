@@ -51,7 +51,7 @@ module.exports.addToCart = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -114,7 +114,7 @@ module.exports.getCartData = async (req, res) => {
             if (result.length > 0) {
                 res.status(200).send({
                     status: 200,
-                    data: result,
+                    data: result[0].cartItem,
                     message: "Cart items retrieved successfully"
                 });
             } else {
@@ -137,7 +137,7 @@ module.exports.getCartData = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -179,7 +179,7 @@ module.exports.removeCartProduct = async (req, res) => {
             {
                 status: 500,
                 data: error,
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }

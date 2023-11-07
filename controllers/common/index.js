@@ -22,7 +22,7 @@ module.exports.getProduct = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -48,7 +48,7 @@ module.exports.getProductCatagory = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -76,7 +76,7 @@ module.exports.getProductById = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
@@ -104,7 +104,7 @@ module.exports.getProductByProductCatagory = async (req, res) => {
             {
                 status: 500,
                 data: [],
-                message: "Server error"
+                message: "Internal server error"
             }
         );
     }
