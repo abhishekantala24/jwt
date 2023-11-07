@@ -63,41 +63,73 @@ module.exports.getCartData = async (req, res) => {
         const cartData = await dbCart.find({ 'customerId': customerId })
 
         if (cartData.length) {
-            const productIds = cartData.map(item => item.productId);
-            const productList = await dbProductList.find({ _id: { $in: productIds } });
-
-            const updatedCartItems = cartData.map(cartItem => {
-                const matchingProduct = productList.find(product => product._id.toString() === cartItem.productId.toString());
-                if (matchingProduct) {
-                    return {
-                        ...cartItem.toObject(),
-                        productData: matchingProduct.toObject()
-                    };
-                }
-                return cartItem;
-            });
-
-            const total = updatedCartItems.reduce((acc, item) => {
-                if (item.productData) {
-                    return acc + item.productData.price * item.quantity;
-                }
-                return acc;
-            }, 0);
-
-            res.status(200).send({
-                status: 200,
-                data: {
-                    cartItem: updatedCartItems,
-                    total
+            const pipeline = [
+                {
+                    $match: { customerId: customerId }
                 },
-                message: "Cart item get successfully"
-            })
+                {
+                    $lookup: {
+                        from: 'products',
+                        let: { localProductId: { $toObjectId: '$productId' } },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: { $eq: ['$_id', '$$localProductId'] }
+                                }
+                            }
+                        ],
+                        as: 'productDetails'
+                    }
+                },
+                {
+                    $unwind: '$productDetails'
+                },
+                {
+                    $group: {
+                        _id: null,
+                        cartItem: {
+                            $push: {
+                                _id: '$$ROOT._id',
+                                productId: '$$ROOT.productId',
+                                customerId: '$$ROOT.customerId',
+                                quantity: '$$ROOT.quantity',
+                                productDetails: '$productDetails',
+                                totalPrice: { $multiply: ['$productDetails.price', '$$ROOT.quantity'] }
+                            }
+                        },
+                        total: { $sum: { $multiply: ['$productDetails.price', '$quantity'] } }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        cartItem: 1,
+                        total: 1
+                    }
+                }
+            ];
+
+            const result = await dbCart.aggregate(pipeline)
+
+            if (result.length > 0) {
+                res.status(200).send({
+                    status: 200,
+                    data: result,
+                    message: "Cart items retrieved successfully"
+                });
+            } else {
+                res.status(404).send({
+                    status: 404,
+                    data: result,
+                    message: "Cart items not found"
+                });
+            }
         } else {
             res.status(404).send({
                 status: 404,
                 data: [],
-                message: "Cart item not found"
-            })
+                message: "Cart items not found"
+            });
         }
     }
     catch (err) {
@@ -146,7 +178,7 @@ module.exports.removeCartProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
-                data: [],
+                data: error,
                 message: "Server error"
             }
         );
