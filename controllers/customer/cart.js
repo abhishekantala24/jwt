@@ -1,50 +1,34 @@
 const dbCart = require("../../modals/customer/cart")
-const dbUser = require('../../modals/customer/createuser')
-const dbProductList = require("../../modals/admin/productlist")
+const dbUser = require('../../modals/customer/user')
+const dbProductList = require("../../modals/admin/product")
 const mongoose = require('mongoose');
 
 module.exports.addToCart = async (req, res) => {
-    const { productId, customerId, quantity } = req.body
-
+    const { productId, quantity } = req.body
+    const userId = req.user.userId
     try {
-        const user = await dbUser.findOne({ "_id": customerId })
-        if (user) {
-            const product = await dbProductList.findOne({ "_id": productId })
-            if (product) {
-                const matchProduct = await dbCart.findOne({ "productId": productId })
-                if (matchProduct) {
-                    const update = await dbCart.updateOne(
-                        { productId: productId },
-                        { $set: { quantity: (parseInt(matchProduct.quantity, 10) + parseInt(quantity, 10)).toString() } })
+        const matchProduct = await dbCart.findOne({ "productId": productId })
+        if (matchProduct) {
+            const update = await dbCart.updateOne(
+                { productId: productId },
+                { $set: { quantity: (parseInt(matchProduct.quantity, 10) + parseInt(quantity, 10)).toString() } })
 
-                    if (update.modifiedCount > 0) {
-                        return res.status(200).send({
-                            status: 200,
-                            data: [],
-                            message: "cart updated"
-                        })
-                    }
-                }
-                else {
-                    await dbCart.create({ "productId": productId, "customerId": customerId, "quantity": quantity, ...product })
-                    return res.status(201).send({
-                        status: 201,
-                        data: [],
-                        message: "product added in your cart"
-                    })
-                }
+            if (update.modifiedCount > 0) {
+                return res.status(200).send({
+                    status: 200,
+                    data: [],
+                    message: "cart updated"
+                })
             }
-            return res.status(404).send({
-                status: 404,
+        }
+        else {
+            await dbCart.create({ "productId": productId, "customerId": userId, "quantity": quantity })
+            return res.status(201).send({
+                status: 201,
                 data: [],
-                message: "product not found"
+                message: "product added in your cart"
             })
         }
-        return res.status(200).send({
-            status: 404,
-            data: [],
-            message: "User not found"
-        })
     }
     catch (err) {
         res.status(500).json(
@@ -60,61 +44,57 @@ module.exports.addToCart = async (req, res) => {
 module.exports.getCartData = async (req, res) => {
     const customerId = req.user.userId
     try {
-        const cartData = await dbCart.find({ 'customerId': customerId })
-
-        if (cartData.length) {
+        const cartData = await dbCart.countDocuments({ 'customerId': customerId })
+        if (cartData) {
             const pipeline = [
                 {
-                    $match: { customerId: customerId }
+                    $match: { customerId: new mongoose.Types.ObjectId(customerId) }
                 },
                 {
                     $lookup: {
-                        from: 'products',
-                        let: { localProductId: { $toObjectId: '$productId' } },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: { $eq: ['$_id', '$$localProductId'] }
-                                }
-                            }
-                        ],
-                        as: 'productDetails'
+                        from: "products",
+                        localField: "productId",
+                        foreignField: "_id",
+                        as: "product",
+                    },
+                },
+                {
+                    $project: {
+                        productCatagory: 0
                     }
                 },
                 {
-                    $unwind: '$productDetails'
+                    $unwind: "$product"
                 },
                 {
-                    $group: {
-                        _id: null,
-                        cartItem: {
-                            $push: {
-                                _id: '$$ROOT._id',
-                                productId: '$$ROOT.productId',
-                                customerId: '$$ROOT.customerId',
-                                quantity: '$$ROOT.quantity',
-                                productDetails: '$productDetails',
-                                totalPrice: { $multiply: ['$productDetails.price', '$$ROOT.quantity'] }
-                            }
-                        },
-                        total: { $sum: { $multiply: ['$productDetails.price', '$quantity'] } }
+                    $lookup: {
+                        from: "catagorys",
+                        localField: "product.productCatagory",
+                        foreignField: "_id",
+                        as: "category",
+                    },
+                },
+                {
+                    $addFields: {
+                        "product.category": { $arrayElemAt: ["$category", 0] }
                     }
                 },
                 {
                     $project: {
-                        _id: 0,
-                        cartItem: 1,
-                        total: 1
+                        productId: 0,
+                        customerId: 0,
+                        "product.productCatagory": 0,
+                        "category": 0
                     }
                 }
             ];
 
-            const result = await dbCart.aggregate(pipeline)
 
+            const result = await dbCart.aggregate(pipeline)
             if (result.length > 0) {
                 res.status(200).send({
                     status: 200,
-                    data: result[0].cartItem,
+                    data: result,
                     message: "Cart items retrieved successfully"
                 });
             } else {
@@ -133,6 +113,7 @@ module.exports.getCartData = async (req, res) => {
         }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json(
             {
                 status: 500,
@@ -144,16 +125,10 @@ module.exports.getCartData = async (req, res) => {
 }
 
 module.exports.removeCartProduct = async (req, res) => {
-    const { customerId, productId } = req.body
+    const customerId = req.user.userId
+    const productId = req.params.id
     try {
-        if (!mongoose.Types.ObjectId.isValid(customerId) || !mongoose.Types.ObjectId.isValid(productId)) {
-            return res.status(400).json({
-                status: 400,
-                data: [],
-                message: "Invalid customerId or productId"
-            });
-        }
-        dbCart.findOne({ customerId, productId })
+        await dbCart.findOne({ customerId, productId })
             .then(async (cartItem) => {
                 if (!cartItem) {
                     return res.status(404).json({
@@ -184,3 +159,24 @@ module.exports.removeCartProduct = async (req, res) => {
         );
     }
 }
+
+module.exports.removeAllCartProduct = async (req, res) => {
+    const customerId = req.user.userId
+    try {
+        await dbCart.deleteMany({ customerId: customerId })
+        return res.status(200).json({
+            status: 200,
+            data: [],
+            message: "removed all cart product"
+        });
+    } catch (error) {
+        res.status(500).json(
+            {
+                status: 500,
+                data: error,
+                message: "Internal server error"
+            }
+        );
+    }
+}
+

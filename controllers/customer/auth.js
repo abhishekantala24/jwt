@@ -1,6 +1,6 @@
 const Message = require("../../config/message")
 
-const dbUser = require('../../modals/customer/createuser')
+const dbUser = require('../../modals/customer/user')
 const otpGenerator = require('otp-generator')
 const authMiddleware = require('../../authMiddleware')
 const bcrypt = require('bcrypt');
@@ -9,7 +9,6 @@ module.exports.login_email = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await dbUser.findOne({ email });
-
         if (!user) {
             return res.status(404).json(
                 {
@@ -45,25 +44,12 @@ module.exports.login_email = async (req, res) => {
     }
 }
 
-
 module.exports.createUser = async (req, res) => {
-    const { email, password, phone, name } = req.body;
-
+    const { email, password, phone, firstName, lastName } = req.body;
     try {
-        const existingUser = await dbUser.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({
-                status: 400,
-                data: [],
-                message: "Email is already registered"
-            });
-        }
-        const user = new dbUser({ email, password, phone, name });
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        user.password = hashedPassword;
-        await user.save();
+        const user = await dbUser.create({ email, password: hashedPassword, phone, firstName, lastName });
         const token = authMiddleware.createToken(user, "@ntala#123");
         res.status(201).json({
             status: 201,
@@ -71,14 +57,33 @@ module.exports.createUser = async (req, res) => {
             message: "User Created Successfully !"
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({
             status: 500,
             data: [],
-            message: "Internal server error"
+            message: error._message
         });
     }
 }
 
+module.exports.updateUserDetails = async (req, res) => {
+    const customerId = req.user.userId
+    const { email, phone, firstName, lastName } = req.body;
+    try {
+        const user = await dbUser.updateOne({ _id: customerId }, { email, phone, firstName, lastName });
+        res.status(201).json({
+            status: 201,
+            data: [],
+            message: "User Updated Successfully !"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            data: [],
+            message: "Something went wrong"
+        });
+    }
+}
 
 module.exports.send_otp = async (req, resp) => {
     const { phoneNumber } = req.body

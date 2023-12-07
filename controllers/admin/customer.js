@@ -1,5 +1,5 @@
 
-const dbUser = require('../../modals/customer/createuser')
+const dbUser = require('../../modals/customer/user')
 
 module.exports.getAllUser = async (req, res) => {
     try {

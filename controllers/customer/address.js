@@ -1,20 +1,9 @@
 const Message = require("../../config/message")
-const dbUser = require('../../modals/customer/createuser')
+const dbUser = require('../../modals/customer/user')
 const dbAddress = require('../../modals/customer/address')
 
 module.exports.addAddress = async (req, res) => {
-    const { customerId } = req.body
     try {
-        const user = await dbUser.findOne({ _id: customerId });
-        if (!user) {
-            return res.status(404).json(
-                {
-                    status: 404,
-                    data: [],
-                    message: "user not found"
-                }
-            );
-        }
         await dbAddress.create(req.body)
         res.status(201).json(
             {
@@ -39,12 +28,12 @@ module.exports.getAddress = async (req, res) => {
     try {
         const id = req.user.userId
         const address = await dbAddress.find({ customerId: id })
-        if (address.length === 0) {
+        if (address) {
             return res.status(404).json(
                 {
                     status: 404,
-                    data: [],
-                    message: "Address not found"
+                    data: address,
+                    message: "Address get successfully"
                 }
             );
         }
@@ -52,7 +41,7 @@ module.exports.getAddress = async (req, res) => {
             {
                 status: 200,
                 data: address,
-                message: "Address get successfully"
+                message: "Address not found"
             }
         );
     }
@@ -102,30 +91,21 @@ module.exports.setDefaultAddress = async (req, res) => {
     try {
         const customerId = req.user.userId
         const addressId = req.params.id
-        dbAddress.updateMany({ customerId }, { isDefault: false })
-        const updatedAddress = await dbAddress.findByIdAndUpdate(addressId, { isDefault: true })
-            .then((defaultAddress) => {
-                if (!defaultAddress) {
-                    return res.status(404).json({
-                        status: 404,
-                        data: [],
-                        message: "Address not found"
-                    });
-                }
-                return res.status(200).json(
-                    {
-                        status: 200,
-                        data: [],
-                        message: 'Default address added successfully'
-                    });
-            })
+        await dbAddress.updateMany({ customerId }, { isDefault: false })
+        await dbAddress.findByIdAndUpdate(addressId, { isDefault: true })
+        return res.status(200).json(
+            {
+                status: 200,
+                data: [],
+                message: 'Default address added successfully'
+            });
     }
     catch (error) {
         res.status(500).json(
             {
                 status: 500,
                 data: [],
-                message: "Internal server error"
+                message: "Address not found"
             }
         );
     }

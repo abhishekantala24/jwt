@@ -1,5 +1,5 @@
 const Message = require("../../config/message")
-const dbProductList = require("../../modals/admin/productlist")
+const dbProductList = require("../../modals/admin/product")
 const dbProductCatagory = require("../../modals/admin/productcatagory")
 
 
@@ -23,9 +23,8 @@ module.exports.addProductCatagory = async (req, res) => {
 }
 
 module.exports.addProduct = async (req, res) => {
-    const { productName, description, price, productCatagory, stock } = req.body
     try {
-        await dbProductList.create({ productName, description, price, productCatagory, stock })
+        await dbProductList.create(req.body)
         res.status(200).send({
             status: 200,
             message: "product added successfully"
@@ -67,7 +66,8 @@ module.exports.UpdateProduct = async (req, res) => {
             })
         }
     }
-    catch {
+    catch (err) {
+        console.log(err);
         res.status(500).json(
             {
                 status: 500,

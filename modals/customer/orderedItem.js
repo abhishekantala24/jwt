@@ -1,23 +1,30 @@
 const mongoose = require('mongoose')
 require('../../config/config')
 
-const cartSchema = mongoose.Schema({
+const orderedItemsSchema = mongoose.Schema({
     productId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products',
         required: true,
     },
     customerId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
         required: true,
     },
     quantity: {
         type: Number,
         required: true,
     },
-    orderId : {
-        type: String,
+    price: {
+        type: Number,
+        required: true,
+    },
+    orderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'orders',
         required: true,
     }
 })
 
-module.exports = mongoose.model('orderedItems', cartSchema)
+module.exports = mongoose.model('ordereditems', orderedItemsSchema)

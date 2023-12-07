@@ -3,11 +3,13 @@ require('../../config/config')
 
 const cartSchema = mongoose.Schema({
     productId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products',
         required: true,
     },
     customerId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
         required: true,
     },
     quantity: {

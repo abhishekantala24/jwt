@@ -3,11 +3,13 @@ require('../../config/config')
 
 const orderSchema = new mongoose.Schema({
     customerId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
         required: true,
     },
     deliveryAddress: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'addresses',
         required: true,
     },
     status: {
@@ -30,7 +32,6 @@ const orderSchema = new mongoose.Schema({
         default: false,
     },
     paymentType: String,
-    orderAcceptedBy: String,
 });
 
  module.exports = mongoose.model('orders', orderSchema);

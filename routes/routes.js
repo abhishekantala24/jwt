@@ -15,6 +15,7 @@ const router = Router()
 // customer authentication apis
 router.post('/auth/createuser', auth.createUser)
 router.post('/auth/login', auth.login_email)
+router.post('/auth/updateUserDetails', authMiddleware.verifyToken, auth.updateUserDetails)
 router.post('/auth/sendotp', auth.send_otp)
 router.post('/auth/verifyotp', auth.verify_otp)
 
@@ -36,7 +37,8 @@ router.get('/getProductByProductCatagory/:id', authMiddleware.verifyToken, commo
 // Customer apis
 router.post('/customer/addtocart', authMiddleware.verifyToken, cart.addToCart)
 router.get('/customer/getCartData', authMiddleware.verifyToken, cart.getCartData)
-router.delete('/customer/removeCartProduct', authMiddleware.verifyToken, cart.removeCartProduct)
+router.delete('/customer/removeCartProduct/:id', authMiddleware.verifyToken, cart.removeCartProduct)
+router.delete('/customer/removeAllCartProduct', authMiddleware.verifyToken, cart.removeAllCartProduct)
 
 router.post('/customer/addaddress', authMiddleware.verifyToken, address.addAddress)
 router.get('/customer/getaddress', authMiddleware.verifyToken, address.getAddress)
@@ -44,6 +46,8 @@ router.put('/customer/defaultaddress/:id', authMiddleware.verifyToken, address.s
 router.delete('/customer/removeaddress/:id', authMiddleware.verifyToken, address.removeAddress)
 
 router.post('/customer/createOrder', authMiddleware.verifyToken, order.createOrder)
+router.get('/customer/getOrder', authMiddleware.verifyToken, order.getOrderData)
+router.get('/customer/getOrderById/:id', authMiddleware.verifyToken, order.getOrderDataById)
 
 router.post('/customer/feedback', authMiddleware.verifyToken, customer.feedback)
 router.post('/customer/inquiry', authMiddleware.verifyToken, customer.inquiry)
