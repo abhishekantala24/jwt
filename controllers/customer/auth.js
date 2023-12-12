@@ -32,7 +32,14 @@ module.exports.login_email = async (req, res) => {
         // Send the token in the response
         res.status(200).json({
             status: 200,
-            data: { token: token },
+            data: {
+                id: user._id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phone: user.phone,
+                token: token
+            },
             message: "Login Successfully !"
         });
     } catch (error) {

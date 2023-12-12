@@ -1,6 +1,8 @@
 const Message = require("../../config/message")
 const dbProductList = require("../../modals/admin/product")
 const dbProductCatagory = require("../../modals/admin/productcatagory")
+const fs = require('fs');
+const path = require('path');
 
 
 module.exports.addProductCatagory = async (req, res) => {
@@ -23,10 +25,22 @@ module.exports.addProductCatagory = async (req, res) => {
 }
 
 module.exports.addProduct = async (req, res) => {
+    const { productName, description, price, productCatagory, stock, imageBase64 } = req.body;
+
     try {
-        await dbProductList.create(req.body)
+        const decodedImage = Buffer.from(imageBase64, 'base64');
+
+        const cleanProductName = productName.replace(/\s+/g, '-');
+        const imageFileName = `${cleanProductName}.jpg`;
+
+        const imagePath = path.join(__dirname, '..', '../uploads', imageFileName);
+        fs.writeFileSync(imagePath, decodedImage);
+        
+        await dbProductList.create({ productName, description, price, productCatagory, stock, image: imageFileName })
+
         res.status(200).send({
             status: 200,
+            data: [],
             message: "product added successfully"
         })
     }
@@ -34,6 +48,7 @@ module.exports.addProduct = async (req, res) => {
         res.status(500).json(
             {
                 status: 500,
+                data: [],
                 message: "Internal server error"
             }
         );
@@ -60,7 +75,7 @@ module.exports.UpdateProduct = async (req, res) => {
                 })
         } else {
             res.status(200).send({
-                status: 200,
+                status: 409,
                 data: [],
                 message: "Product already modify with that value"
             })

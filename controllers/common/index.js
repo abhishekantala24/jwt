@@ -5,9 +5,23 @@ const dbProductCatagory = require("../../modals/admin/productcatagory")
 
 module.exports.getProduct = async (req, res) => {
     try {
-        const product = await dbProductList.find({})
+        const product = await dbProductList.aggregate([
+            {
+                $lookup: {
+                    from: 'catagorys',
+                    localField: 'productCatagory',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $unwind: '$category'
+            }
+        ]).exec();
+
         if (product) {
             return res.status(200).send({
+                status: 200,
                 data: product,
                 message: "All product get successfully"
             })

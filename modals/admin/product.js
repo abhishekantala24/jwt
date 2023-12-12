@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 require('../../config/config')
 
 const productSchema = mongoose.Schema({
-   
+
     productName: {
         type: String,
         required: true,
@@ -20,9 +20,13 @@ const productSchema = mongoose.Schema({
         ref: 'catagorys',
         required: true,
     },
-    stock:{
+    stock: {
         type: String,
-        required: true,  
+        required: true,
+    },
+    image: {
+        type: String,
+        required: true,
     }
 })
 

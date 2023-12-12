@@ -1,4 +1,3 @@
-
 const dbUser = require('../../modals/customer/user')
 
 module.exports.getAllUser = async (req, res) => {
